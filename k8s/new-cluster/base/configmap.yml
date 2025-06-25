@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taxonworks
+data:
+  # Database configuration
+  db.host: "postgres-service.taxonworks.svc.cluster.local"
+  db.name: "taxonworks_production"
+  
+  # Server configuration
+  server.name: "taxonworks.example.com"  # Update this
+  
+  # Email configuration
+  tw.exception_notification.email_prefix: "[TaxonWorks Error]"
+  tw.exception_notification.sender_address: "noreply@example.com"
+  tw.exception_recipients: "admin@example.com"
+  
+  # SMTP configuration
+  tw.action_mailer_smtp_settings.address: "smtp.gmail.com"
+  tw.action_mailer_smtp_settings.port: "587"
+  tw.action_mailer_smtp_settings.domain: "example.com"
+  tw.action_mailer_url_host: "taxonworks.example.com"
+  tw.mail_domain: "example.com"
+  
+  # Path configuration
+  tw.paths.staging: "/staging"
+  tw.paths.backup: "/backup"

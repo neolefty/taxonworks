@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: taxonworks-media-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi  # Reduced from 4700Gi for testing
+  # Remove selector to use dynamic provisioning
+  # storageClassName: standard  # Uncomment and set your storage class
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: taxonworks-backup-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Gi  # Reduced from 4700Gi for testing
+  # storageClassName: standard  # Uncomment and set your storage class
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: taxonworks-staging-pv-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi  # Reduced from 4700Gi for testing
+  # storageClassName: standard  # Uncomment and set your storage class
