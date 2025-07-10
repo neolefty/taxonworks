@@ -18,6 +18,7 @@ This project <em>does not yet</em> adheres to [Semantic Versioning](https://semv
 - Filter Observations: Sounds facet
 - Add 'include_common_names' parameter to API Otu autocomplete
 - DwC import task: Detect and highlight columns that will be ignored [#4406]
+- Project data export task: Recent download table [#4470]
 
 ### Fixed
 
@@ -40,6 +41,7 @@ This project <em>does not yet</em> adheres to [Semantic Versioning](https://semv
 - Rename `Synchronize nomenclature and OTUs` to `Synchronize taxon names and OTUs`
 - Topic facet: Show all topics in a modal [#4456]
 - Updated Ruby gems
+- Field Synchronize and multi update task now sorts by ID url parameter [#4472]
 
 [#3511]: https://github.com/SpeciesFileGroup/taxonworks/issues/3511
 [#4399]: https://github.com/SpeciesFileGroup/taxonworks/issues/4399
@@ -54,6 +56,8 @@ This project <em>does not yet</em> adheres to [Semantic Versioning](https://semv
 [#4461]: https://github.com/SpeciesFileGroup/taxonworks/issues/4461
 [#4465]: https://github.com/SpeciesFileGroup/taxonworks/issues/4465
 [#4466]: https://github.com/SpeciesFileGroup/taxonworks/issues/4466
+[#4470]: https://github.com/SpeciesFileGroup/taxonworks/issues/4470
+[#4472]: https://github.com/SpeciesFileGroup/taxonworks/issues/4472
 
 ## [0.52.1] - 2025-06-17
 
