@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taxonworks-ingress
+spec:
+  rules:
+    - host: taxonworks.48.216.156.172.sslip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taxonworks
+                port:
+                  number: 80

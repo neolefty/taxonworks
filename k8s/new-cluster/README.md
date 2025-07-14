@@ -10,6 +10,10 @@ This directory contains updated Kubernetes manifests for deploying TaxonWorks to
 4. Storage class that supports ReadWriteMany (for shared volumes)
 5. Ingress controller installed (e.g., nginx-ingress)
 
+## Environment Configuration
+
+Before deploying, you must configure environment-specific settings. See [ENVIRONMENT_CONFIG.md](./ENVIRONMENT_CONFIG.md) for detailed instructions on all required configuration values.
+
 ## Quick Start
 
 1. **Create secrets file**:
