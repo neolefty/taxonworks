@@ -10,6 +10,7 @@ namespace: development
 patchesStrategicMerge:
 - configmap.yml
 - ingress.yml
+- app.yml
 
 # Use replacements to swap out the PVC names in the app deployment
 replacements:
