@@ -40,17 +40,33 @@ This overlay addresses the following AKS environment limitations:
 
 ## Post-Deployment
 
-1. **Check deployment**:
+1. **Monitor deployment progress**:
    ```bash
+   # Watch pod status continuously
+   kubectl get pods -n development -w
+   
+   # Check deployment status
    kubectl get all -n development
+   
+   # Check specific pod details if issues occur
+   kubectl describe pod <pod-name> -n development
    ```
 
-2. **Run migrations**:
+2. **View application logs**:
+   ```bash
+   # Follow logs from the deployment (automatically follows active pod)
+   kubectl logs -f deployment/taxonworks -n development
+   
+   # Or follow logs from specific pod
+   kubectl logs -f <pod-name> -n development
+   ```
+
+3. **Run migrations**:
    ```bash
    kubectl exec -it deployment/taxonworks -n development -- rails db:migrate
    ```
 
-3. **Create admin user**:
+4. **Create admin user**:
    ```bash
    kubectl exec -it deployment/taxonworks -n development -- rails console
    # In console: User.create!(email: 'admin@example.com', password: 'password', is_administrator: true)
