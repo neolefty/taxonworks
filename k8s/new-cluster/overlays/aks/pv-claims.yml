@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  # storageClassName: standard  # Uncomment and set your AKS storage class
+  storageClassName: azurefile-csi  # Azure Files supports ReadWriteMany

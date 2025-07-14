@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: taxonworks
 
 resources:
-  - namespace.yml
+  # - namespace.yml  # Commented out for AKS - namespace managed separately
   - configmap.yml
   # - secret.yml  # Uncomment when you create the actual secret file
   - postgres.yml

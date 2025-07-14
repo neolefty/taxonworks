@@ -14,6 +14,10 @@ This directory contains updated Kubernetes manifests for deploying TaxonWorks to
 
 Before deploying, you must configure environment-specific settings. See [ENVIRONMENT_CONFIG.md](./ENVIRONMENT_CONFIG.md) for detailed instructions on all required configuration values.
 
+### AKS Deployment
+
+For Azure Kubernetes Service deployment with specific constraints, see the [AKS Quick Start](./overlays/aks/README.md) guide.
+
 ## Quick Start
 
 1. **Create secrets file**:

@@ -2,7 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- ../../base
+- configmap.yml
+- postgres.yml
+- pv-claims-all.yml
+- app.yml
+- ingress.yml
 - pv-claims.yml
 
 namespace: development
