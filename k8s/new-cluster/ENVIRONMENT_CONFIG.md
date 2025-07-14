@@ -130,7 +130,7 @@ k8s/new-cluster/
 │   ├── ingress.yml         # Keep example.com values
 │   └── ...other files...
 └── overlays/
-    ├── experimental/       # Your test environment
+    ├── aks/       # AKS test environment
     │   ├── kustomization.yml
     │   ├── configmap.yml   # Only your specific overrides
     │   └── ingress.yml     # Only your specific overrides
@@ -182,7 +182,7 @@ kubectl apply -k k8s/new-cluster/base/
 
 Use:
 ```bash
-kubectl apply -k k8s/new-cluster/overlays/experimental/
+kubectl apply -k k8s/new-cluster/overlays/aks/
 ```
 
 ### Benefits
@@ -197,5 +197,5 @@ kubectl apply -k k8s/new-cluster/overlays/experimental/
 
 When using overlays, update your deploy command:
 ```bash
-./deploy.sh /path/to/kubeconfig k8s/new-cluster/overlays/experimental/
+./deploy.sh /path/to/kubeconfig k8s/new-cluster/overlays/aks/
 ```
