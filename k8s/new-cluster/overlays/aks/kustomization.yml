@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
 - ../../base
-- pv-claims.yml
+- shared-pvc.yml
 
 namespace: development
 
@@ -11,12 +11,13 @@ patchesStrategicMerge:
 - configmap.yml
 - ingress.yml
 - app.yml
+- postgres.yml
 
 # Use replacements to swap out the PVC names in the app deployment
 replacements:
 - source:
     kind: PersistentVolumeClaim
-    name: development
+    name: shared-dev-storage
   targets:
   - select:
       kind: Deployment

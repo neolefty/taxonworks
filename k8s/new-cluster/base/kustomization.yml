@@ -6,7 +6,7 @@ namespace: taxonworks
 resources:
   # - namespace.yml  # Commented out for AKS - namespace managed separately
   - configmap.yml
-  # - secret.yml  # Uncomment when you create the actual secret file
+  - secret.yml  # Secret file with database credentials
   - postgres.yml
   - pv-claims.yml
   - app.yml
@@ -14,4 +14,4 @@ resources:
 
 images:
   - name: sfgrp/taxonworks
-    newTag: 0.3.12  # Update as needed
+    newTag: 0.9.8  # Updated to latest available version

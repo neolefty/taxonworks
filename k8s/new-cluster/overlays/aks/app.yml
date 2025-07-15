@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: taxonworks
 spec:
-  replicas: 1  # Reduce from 3 to 1 for test environment
+  replicas: 1  # Back to single replica for test environment
   template:
     spec:
       securityContext:
@@ -28,8 +28,8 @@ spec:
             type: RuntimeDefault
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "250m"
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "2Gi"
-            cpu: "1"
+            memory: "1Gi"
+            cpu: "500m"

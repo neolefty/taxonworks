@@ -1,0 +1,13 @@
+# Reference to the existing shared-dev-storage PVC
+# This is just for kustomize replacements to work
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-dev-storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: azurefile-csi
