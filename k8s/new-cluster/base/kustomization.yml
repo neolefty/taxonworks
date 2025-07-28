@@ -3,8 +3,8 @@ kind: Kustomization
 
 namespace: taxonworks
 
-  # - namespace.yml  # Commented out for AKS - namespace managed separately
 resources:
+  # - namespace.yml  # Commented out for AKS - namespace managed separately
 - configmap.yml
 - secret.yml
 - postgres.yml
