@@ -12,6 +12,13 @@ patchesStrategicMerge:
 - ingress.yml
 - app.yml
 - postgres.yml
+- remove-pvcs.yml
+
+# Configure local registry image for AKS deployment
+images:
+- name: sfgrp/taxonworks
+  newName: registry.48.216.156.172.sslip.io/taxonworks
+  newTag: k8s-test
 
 # Use replacements to swap out the PVC names in the app deployment
 replacements:

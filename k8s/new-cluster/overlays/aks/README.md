@@ -5,8 +5,9 @@ This overlay is configured for Azure Kubernetes Service (AKS) deployment with sp
 ## AKS Constraints
 
 This overlay addresses the following AKS environment limitations:
-- **Single PVC**: Only one persistent volume claim named "development" (100Gi)
+- **Single Shared PVC**: Uses only the existing `shared-dev-storage` PVC (15Gi, RWX)
 - **Single Namespace**: All resources deploy to "development" namespace
+- **No Additional PVCs**: Base PVCs are removed via patches to prevent creation
 
 ## Prerequisites
 
@@ -33,7 +34,19 @@ This overlay addresses the following AKS environment limitations:
    # Uncomment and set storageClassName (e.g., azurefile-csi)
    ```
 
-4. **Deploy**:
+4. **Push image to local registry**:
+   ```bash
+   # Tag your local image
+   docker tag taxonworks:k8s-test registry.48.216.156.172.sslip.io/taxonworks:k8s-test
+   
+   # Push to registry
+   docker push registry.48.216.156.172.sslip.io/taxonworks:k8s-test
+   
+   # Verify image exists
+   curl -s https://registry.48.216.156.172.sslip.io/v2/taxonworks/tags/list
+   ```
+
+5. **Deploy**:
    ```bash
    kubectl apply -k k8s/new-cluster/overlays/aks/
    ```
