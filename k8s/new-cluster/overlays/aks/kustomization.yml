@@ -7,12 +7,6 @@ resources:
 
 namespace: development
 
-patchesStrategicMerge:
-- configmap.yml
-- ingress.yml
-- app.yml
-- postgres.yml
-- remove-pvcs.yml
 
 # Configure local registry image for AKS deployment
 images:
@@ -26,10 +20,16 @@ replacements:
     kind: PersistentVolumeClaim
     name: shared-dev-storage
   targets:
-  - select:
-      kind: Deployment
-      name: taxonworks
-    fieldPaths:
+  - fieldPaths:
     - spec.template.spec.volumes.[name=taxonworks-media-vol].persistentVolumeClaim.claimName
     - spec.template.spec.volumes.[name=taxonworks-backup-vol].persistentVolumeClaim.claimName
     - spec.template.spec.volumes.[name=taxonworks-staging-vol].persistentVolumeClaim.claimName
+    select:
+      kind: Deployment
+      name: taxonworks
+patches:
+- path: configmap.yml
+- path: ingress.yml
+- path: app.yml
+- path: postgres.yml
+- path: remove-pvcs.yml

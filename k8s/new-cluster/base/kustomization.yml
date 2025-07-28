@@ -3,15 +3,15 @@ kind: Kustomization
 
 namespace: taxonworks
 
-resources:
   # - namespace.yml  # Commented out for AKS - namespace managed separately
-  - configmap.yml
-  - secret.yml  # Secret file with database credentials
-  - postgres.yml
-  - pv-claims.yml
-  - app.yml
-  - ingress.yml
+resources:
+- configmap.yml
+- secret.yml
+- postgres.yml
+- pv-claims.yml
+- app.yml
+- ingress.yml
 
 images:
-  - name: sfgrp/taxonworks
-    newTag: 0.9.8  # Updated to latest available version
+- name: sfgrp/taxonworks
+  newTag: 0.9.8
