@@ -7,7 +7,11 @@ This overlay is configured for Azure Kubernetes Service (AKS) deployment with sp
 This overlay addresses the following AKS environment limitations:
 - **Single Shared PVC**: Uses only the existing `shared-dev-storage` PVC (15Gi, RWX)
 - **Single Namespace**: All resources deploy to "development" namespace
-- **No Additional PVCs**: Base PVCs are removed via patches to prevent creation
+
+### Storage Note
+The base configuration creates three PVCs (media, backup, staging) that will remain in Pending state. 
+These are not used - the deployment is configured via kustomize replacements to use `shared-dev-storage` instead.
+This is a known issue but doesn't affect functionality.
 
 ## Prerequisites
 
