@@ -45,6 +45,7 @@ module Queries
       collecting_event: [:source, :collection_object, :field_occurrence, :biological_association, :otu, :image, :taxon_name, :dwc_occurrence],
       collection_object: [:source, :loan, :otu, :taxon_name, :collecting_event, :biological_association, :extract, :image, :observation, :dwc_occurrence],
       content: [:source, :otu, :taxon_name, :image],
+      conveyance: [:sound],
       controlled_vocabulary_term: [:data_attribute],
       data_attribute: [:collection_object, :collecting_event, :field_occurrence, :taxon_name, :otu],
       dwc_occurrence: [:asserted_distribution, :collection_object, :collecting_event, :field_occurrence],
@@ -96,6 +97,7 @@ module Queries
       collection_object_query: '::Queries::CollectionObject::Filter',
       content_query: '::Queries::Content::Filter',
       controlled_vocabulary_term_query: '::Queries::ControlledVocabularyTerm::Filter',
+      conveyance_query: '::Queries::Conveyance::Filter',
       data_attribute_query: '::Queries::DataAttribute::Filter',
       depiction_query: '::Queries::Depiction::Filter',
       descriptor_query: '::Queries::Descriptor::Filter',
@@ -169,6 +171,9 @@ module Queries
 
     # @return [Query::Content::Filter, nil]
     attr_accessor :content_query
+
+    # @return [Query::Conveyance::Filter, nil]
+    attr_accessor :conveyance_query
 
     # @return [Query::DataAttribute::Filter, nil]
     attr_accessor :data_attribute_query
@@ -601,6 +606,53 @@ module Queries
       true
     end
 
+    def paging_state
+      if paginate
+        {
+          paginate: true,
+          per:,
+          page:,
+          # This shouldn't be here, but see order_by processing for identifiers
+          # in #all.
+          ordered: order_by.present?
+        }
+      else
+        { paginate: false }
+      end
+    end
+
+    def disable_paging
+      r = paging_state
+
+      self.paginate = false
+
+      r
+    end
+
+    # @param query [ActiveQuery]
+    def set_paging(query)
+      self.class.set_paging(query, paging_state)
+    end
+
+    # @param query [ActiveQuery]
+    # @param state [Hash] see #paging_state
+    # @return [ActiveQuery] query with paging set to state
+    def self.set_paging(query, state)
+      return query if !state
+      state = state.symbolize_keys
+
+      if state[:paginate]
+        if state[:ordered]
+          # Order has already been set.
+          query = query.page(state[:page]).per(state[:per])
+        else
+          query = query.order(:id).page(state[:page]).per(state[:per])
+        end
+      end
+
+      query
+    end
+
     # Returns id= facet, automatically
     # added to all queries.
     # Over-ridden in some base classes.
@@ -841,13 +893,7 @@ module Queries
         end
       end
 
-      if paginate
-        if order_by
-          q = q.page(page).per(per)
-        else
-          q = q.order(:id).page(page).per(per)
-        end
-      end
+      q = set_paging(q)
 
       # TODO: canonically address whether or not to use `.distinct` at this point, we should be able to, however
       # some incoming queries may have joins/group/etc. alone?! I.e. why can't we?
