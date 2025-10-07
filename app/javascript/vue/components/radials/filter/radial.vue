@@ -25,7 +25,7 @@
       color="radial"
       :title="title"
       circle
-      :disabled="disabled || (!Object.keys(filteredParameters).length && !ids)"
+      :disabled="isDisabled"
       @click="openRadialMenu()"
     >
       <VIcon
@@ -59,6 +59,11 @@ const EXCLUDE_PARAMETERS = ['page', 'per', 'extend', 'venn', 'venn_mode']
 const uuid = randomUUID()
 
 const props = defineProps({
+  extendedSlices: {
+    type: Array,
+    default: () => []
+  },
+
   disabled: {
     type: Boolean,
     default: false
@@ -87,6 +92,21 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
+const isDisabled = computed(
+  () =>
+    props.disabled ||
+    !filterLinks.value.length ||
+    (!Object.keys(filteredParameters.value).length && !props.ids)
+)
+
+const title = computed(() =>
+  isOnlyIds.value
+    ? `${props.title} (Send checked rows to filter)`
+    : `${props.title} (Send full request to filter)`
+)
+
+const isOnlyIds = computed(() => Array.isArray(props.ids))
+
 const filteredParameters = computed(() => {
   const params = { ...props.parameters }
 
@@ -97,38 +117,39 @@ const filteredParameters = computed(() => {
   return filterEmptyParams(params)
 })
 
-const title = computed(() =>
-  isOnlyIds.value
-    ? `${props.title} (Send checked rows to filter)`
-    : `${props.title} (Send full request to filter)`
-)
-
-const isOnlyIds = computed(() => Array.isArray(props.ids))
 const filterLinks = computed(() => {
-  const objLinks = FILTER_LINKS[props.objectType]
+  const slices = FILTER_LINKS[props.objectType] || []
 
-  return objLinks || []
+  return [...slices, ...props.extendedSlices]
 })
 
-const queryObject = computed(() => {
-  const params = isOnlyIds.value
+const objParameters = computed(() =>
+  isOnlyIds.value
     ? { [ID_PARAM_FOR[props.objectType]]: props.ids }
     : { ...filteredParameters.value }
+)
 
-  return { [QUERY_PARAM[props.objectType]]: params }
+const queryObject = computed(() => {
+  return { [QUERY_PARAM[props.objectType]]: objParameters.value }
 })
 
 const hasParameters = computed(
   () => !!Object.keys(filteredParameters.value).length || !!props.ids?.length
 )
 
+function getParametersBySlice(slice) {
+  const params = slice.flattenQuery ? objParameters.value : queryObject.value
+
+  return {
+    ...params,
+    ...slice.params,
+    per: props.parameters?.per
+  }
+}
+
 const menuOptions = computed(() => {
   const slices = filterLinks.value.map((item) => {
-    const urlParameters = {
-      ...queryObject.value,
-      ...item.params,
-      per: props.parameters?.per
-    }
+    const urlParameters = getParametersBySlice(item)
 
     const urlWithParameters =
       item.link +
@@ -195,13 +216,8 @@ function saveParametersOnStorage(e) {
     (l) => l.label === e.segmentObject.slice.label
   )
 
-  console.log(filterlink)
   if (hasParameters.value) {
-    const params = {
-      ...queryObject.value,
-      ...filterlink?.params,
-      per: props.parameters?.per
-    }
+    const params = getParametersBySlice(filterlink)
     const total = sessionStorage.getItem('totalFilterResult')
     const totalQueries =
       JSON.parse(sessionStorage.getItem('totalQueries')) || []

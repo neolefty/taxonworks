@@ -1,0 +1,27 @@
+const { generateRspackConfig, merge } = require('shakapacker/rspack')
+const vueConfig = require('./rules/vue')
+const devServerConfig = require('./rules/devServer')
+const path = require('node:path')
+
+const rspackConfig = generateRspackConfig()
+
+const customConfig = {
+  resolve: {
+    extensions: ['.vue', '.css', '.scss', '.js'],
+    alias: {
+      '@': path.resolve(__dirname, '..', '..', 'app/javascript/vue')
+    }
+  },
+  output: {
+    environment: {
+      asyncFunction: true
+    }
+  }
+}
+
+module.exports = merge(
+  vueConfig,
+  devServerConfig(rspackConfig),
+  customConfig,
+  rspackConfig
+)

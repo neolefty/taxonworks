@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_19_135801) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "fuzzystrmatch"
@@ -70,7 +70,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
   end
 
   create_table "asserted_distributions", id: :serial, force: :cascade do |t|
-    t.integer "otu_id", null: false
+    t.integer "otu_id"
     t.integer "geographic_area_id"
     t.integer "project_id", null: false
     t.integer "created_by_id", null: false
@@ -80,6 +80,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.boolean "is_absent"
     t.integer "asserted_distribution_shape_id", null: false
     t.string "asserted_distribution_shape_type", null: false
+    t.integer "asserted_distribution_object_id", null: false
+    t.string "asserted_distribution_object_type", null: false
+    t.index ["asserted_distribution_object_id", "asserted_distribution_object_type"], name: "asserted_distribution_polymorphic_object_index"
     t.index ["asserted_distribution_shape_id", "asserted_distribution_shape_type"], name: "asserted_distribution_polymorphic_shape_index"
     t.index ["created_by_id"], name: "index_asserted_distributions_on_created_by_id"
     t.index ["geographic_area_id"], name: "index_asserted_distributions_on_geographic_area_id"
@@ -224,7 +227,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.bigint "geographic_item_id", null: false
     t.string "type"
     t.integer "reference_count"
-    t.boolean "is_absent"
     t.string "level0_geographic_name"
     t.string "level1_geographic_name"
     t.string "level2_geographic_name"
@@ -774,6 +776,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.boolean "is_public"
     t.string "type"
     t.integer "total_records"
+    t.string "sha2"
     t.index ["created_by_id"], name: "index_downloads_on_created_by_id"
     t.index ["filename"], name: "index_downloads_on_filename"
     t.index ["project_id"], name: "index_downloads_on_project_id"
@@ -967,11 +970,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.string "tribe"
     t.string "subtribe"
     t.text "rebuild_set"
+    t.index ["country"], name: "index_dwc_occurrences_on_country"
+    t.index ["county"], name: "index_dwc_occurrences_on_county"
     t.index ["created_at"], name: "index_dwc_occurrences_on_created_at"
     t.index ["dwc_occurrence_object_id", "dwc_occurrence_object_type"], name: "dwc_occurrences_object_index"
     t.index ["project_id"], name: "index_dwc_occurrences_on_project_id"
     t.index ["rebuild_set", "id"], name: "idx_dwc_occurrences_rebuild_set_id"
     t.index ["rebuild_set", "id"], name: "index_dwc_occurrences_on_rebuild_set_and_id"
+    t.index ["stateProvince"], name: "index_dwc_occurrences_on_stateProvince"
     t.index ["updated_at"], name: "index_dwc_occurrences_on_updated_at"
   end
 
@@ -1280,6 +1286,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.index ["descendant_id"], name: "lead_desc_idx"
   end
 
+  create_table "lead_items", force: :cascade do |t|
+    t.integer "lead_id", null: false
+    t.integer "otu_id", null: false
+    t.bigint "project_id", null: false
+    t.integer "created_by_id", null: false
+    t.integer "updated_by_id", null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_lead_items_on_created_by_id"
+    t.index ["lead_id"], name: "index_lead_items_on_lead_id"
+    t.index ["otu_id"], name: "index_lead_items_on_otu_id"
+    t.index ["project_id"], name: "index_lead_items_on_project_id"
+    t.index ["updated_by_id"], name: "index_lead_items_on_updated_by_id"
+  end
+
   create_table "leads", force: :cascade do |t|
     t.bigint "parent_id"
     t.bigint "otu_id"
@@ -1296,7 +1318,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
     t.integer "updated_by_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "observation_matrix_id"
     t.index ["created_by_id"], name: "index_leads_on_created_by_id"
+    t.index ["observation_matrix_id"], name: "index_leads_on_observation_matrix_id"
     t.index ["otu_id"], name: "index_leads_on_otu_id"
     t.index ["parent_id"], name: "index_leads_on_parent_id"
     t.index ["position"], name: "index_leads_on_position"
@@ -2429,8 +2453,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_11_195046) do
   add_foreign_key "labels", "users", column: "updated_by_id", name: "labels_updated_by_id_fk"
   add_foreign_key "languages", "users", column: "created_by_id", name: "languages_created_by_id_fkey"
   add_foreign_key "languages", "users", column: "updated_by_id", name: "languages_updated_by_id_fkey"
+  add_foreign_key "lead_items", "projects"
   add_foreign_key "leads", "leads", column: "parent_id"
   add_foreign_key "leads", "leads", column: "redirect_id"
+  add_foreign_key "leads", "observation_matrices", on_delete: :nullify
   add_foreign_key "leads", "otus"
   add_foreign_key "leads", "projects"
   add_foreign_key "loan_items", "loans", name: "loan_items_loan_id_fkey"
